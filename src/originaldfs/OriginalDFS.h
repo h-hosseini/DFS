@@ -10,7 +10,7 @@
 
  class OriginalDFS
  {
- private:
+ protected:
    enum colors{
      white,
      gray,
@@ -39,18 +39,23 @@
    {};
 
    OriginalDFS(const Graph &g);
+   ~OriginalDFS();
 
-private:
+protected:
 
-   void dfsVisit(const Graph &g, int u);
+    virtual void init(const Graph &g);
+
+    virtual void startDFS(const Graph &g);
+
+    virtual void dfsVisit(const Graph &g, int u);
 
 public:
 
-    VertexIndex_t getParent(VertexIndex_t u) const;
+    virtual VertexIndex_t getParent(VertexIndex_t u) const;
 
-    unsigned int getDiscoveryTime(VertexIndex_t u) const;
+    virtual unsigned int getDiscoveryTime(VertexIndex_t u) const;
 
-    unsigned int getFinishingTime(VertexIndex_t u) const;
+    virtual unsigned int getFinishingTime(VertexIndex_t u) const;
 
  };
 #endif // ifndef DFS_ORIGINALDFS_ORIGINALDFS_H_

@@ -6,24 +6,31 @@
 
 OriginalDFS::OriginalDFS(const Graph &g)
 {
+    init(g);
+    startDFS(g);
+}
 
-  numNodes = g.getNumNodes();
-  node = new Node_t[numNodes];
+void OriginalDFS::init(const Graph &g)
+{
+    numNodes = g.getNumNodes();
+    node = new Node_t[numNodes];
 
-  for(int u = 0; u < numNodes; u++){
-    node[u].nodeIndex = u;
-    node[u].color = white;
-    //node[u].parent = -1;
-    node[u].parent = nullptr;
-    node[u].discoveryTime = 0; //The valid discovery time is start from 1 in the DFS algorithm.
-    node[u].finishingTime = 0; //The valid discovery time is start from 1 in the DFS algorithm.
-  }
+    for(int u = 0; u < numNodes; u++){
+        node[u].nodeIndex = u;
+        node[u].color = white;
+        //node[u].parent = -1;
+        node[u].parent = nullptr;
+        node[u].discoveryTime = 0; //The valid discovery time is start from 1 in the DFS algorithm.
+        node[u].finishingTime = 0; //The valid discovery time is start from 1 in the DFS algorithm.
+    }
 
-  time = 0;
-
-  for(int u = 0; u < numNodes; u++){
-    if (node[u].color == white)
-      dfsVisit(g, u);
+    time = 0;
+}
+void OriginalDFS::startDFS(const Graph &g)
+{
+    for(int u = 0; u < numNodes; u++){
+        if (node[u].color == white)
+            dfsVisit(g, u);
   }
 }
 
@@ -63,9 +70,18 @@ VertexIndex_t OriginalDFS::getParent(VertexIndex_t u) const{
 }
 
 unsigned int OriginalDFS::getDiscoveryTime(VertexIndex_t u) const{
-        return node[u].discoveryTime;
+    return node[u].discoveryTime;
 }
 
 unsigned int OriginalDFS::getFinishingTime(VertexIndex_t u) const{
-        return node[u].finishingTime;
+    return node[u].finishingTime;
+}
+
+OriginalDFS::~OriginalDFS()
+{
+    if (numNodes > 1)
+        delete [] node;
+    else if (numNodes == 1)
+        delete node;
+    node = nullptr;
 }
