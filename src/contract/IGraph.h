@@ -10,22 +10,25 @@
  * Otherwise, value of edge(u,v) is the weight of the edge between u and v.
  */
 typedef float Edge_t;
-typedef unsigned int VertexIndex_t; //An index to show a vertex in a graph
-typedef unsigned int GraphSize_t;  // To show the number of nodes in a graph
+
+/* An index to show a vertex in a graph
+ * If a node has not any parent, we show its parent by -1
+ */
+typedef int VertexIndex_t;
 
 class IGraph
 {
 public:
 
-    virtual GraphSize_t getNumNodes() = 0;
+    virtual int getNumNodes() const = 0;
 
-    virtual VertexIndex_t *getNeighbors(VertexIndex_t u) = 0;
+    virtual VertexIndex_t *getNeighbors(VertexIndex_t u) const = 0;
 
-    virtual GraphSize_t getNumNeighbors(VertexIndex_t u) = 0;
+    virtual int getNumNeighbors(VertexIndex_t u) const = 0;
 
-    virtual bool hasEdge(VertexIndex_t u, VertexIndex_t v) = 0;
+    virtual bool hasEdge(VertexIndex_t u, VertexIndex_t v) const = 0;
 
-    virtual bool areNeighbors(VertexIndex_t u, VertexIndex_t v) = 0;
+    virtual bool areNeighbors(VertexIndex_t u, VertexIndex_t v) const = 0;
 
 };
 #endif // ifndef DFS_CONTRACT_IGRAPH_H_

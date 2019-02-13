@@ -3,27 +3,47 @@
  */
 
 #include "Graph.h"
+#include <iostream>
 
-Graph::Graph(GraphSize_t numNodes)
+Graph::Graph(int numNodes)
 {
   this->numNodes = numNodes;
-  edges = new (Edge_t *[numNodes]);
+  edges = new Edge_t *[numNodes];
   for(int i = 0; i < numNodes; i++){
-    edges[i] = new (Edge_t[numNodes]);
+    edges[i] = new Edge_t[numNodes];
     for(int j = 0; j < numNodes; j++){
       edges[i][j] = 0;
     }
   }
 }
 
-GraphSize_t Graph::getNumNodes()
+Graph::Graph(Matrix &matrix) : Graph(matrix.size())
+{
+    //TODO : matrix must be symmetric, i.e m.size() == m[0].size()
+    for(int i = 0; i < numNodes; i++)
+        for(int j = 0; j < numNodes; j++)
+            edges[i][j] = matrix[i][j];
+
+}
+
+/*Graph::Graph(int numNodes, void *mat) : Graph(numNodes)
+{
+    //First, we cast mat to 2D array
+    Edge_t (*matrix)[numNodes][numNodes] = (Edge_t (*)[numNodes][numNodes]) mat;
+
+    for(int i = 0; i < numNodes; i++)
+        for(int j = 0; j < numNodes; j++)
+            edges[i][j] = (*matrix)[i][j];
+}
+*/
+int Graph::getNumNodes() const
 {
   return numNodes;
 }
 
-GraphSize_t Graph::getNumNeighbors(VertexIndex_t u)
+int Graph::getNumNeighbors(VertexIndex_t u) const
 {
-  GraphSize_t numNeighbors = 0;
+  int numNeighbors = 0;
   for(int v = 0; v < numNodes; v++){
     if(edges[u][v] != 0)
       numNeighbors++;
@@ -32,19 +52,23 @@ GraphSize_t Graph::getNumNeighbors(VertexIndex_t u)
   return numNeighbors;
 }
 
-VertexIndex_t *Graph::getNeighbors(VertexIndex_t u)
+VertexIndex_t *Graph::getNeighbors(VertexIndex_t u) const
 {
-  VertexIndex_t *neighbors = new(VertexIndex_t[getNumNeighbors(u)]);
-  int i = 0;
-  for(int v = 0; v < numNodes; v++){
-    if(edges[u][v] != 0)
-      neighbors[i++] = v;
-  }
+    VertexIndex_t *neighbors = nullptr;
+
+    if (getNumNeighbors(u) > 0){
+        neighbors = new VertexIndex_t[getNumNeighbors(u)];
+        int i = 0;
+        for(int v = 0; v < numNodes; v++){
+            if(edges[u][v] != 0)
+            neighbors[i++] = v;
+        }
+    }
 
   return neighbors;
 }
 
-bool Graph::hasEdge(VertexIndex_t u, VertexIndex_t v)
+bool Graph::hasEdge(VertexIndex_t u, VertexIndex_t v) const
 {
   if(edges[u][v] != 0)
     return true;
@@ -52,17 +76,12 @@ bool Graph::hasEdge(VertexIndex_t u, VertexIndex_t v)
   return false;
 }
 
-bool Graph::areNeighbors(VertexIndex_t u, VertexIndex_t v)
+bool Graph::areNeighbors(VertexIndex_t u, VertexIndex_t v) const
 {
   return hasEdge(u,v);
 
 }
 
-/*void Graph::setNumNodes(GraphSize_t numNodes)
-{
-    this->numNodes = numNodes;
-}
-*/
 bool Graph::setEdge(VertexIndex_t u, VertexIndex_t v, float weight)
 {
     if((u < numNodes) && (v < numNodes)){
@@ -73,9 +92,19 @@ bool Graph::setEdge(VertexIndex_t u, VertexIndex_t v, float weight)
     }
 }
 
-
 Graph::~Graph()
 {
+    for(int i = 0; i < numNodes; i++){
+        if (numNodes > 1)
+            delete []edges[i];
+        else if(numNodes == 1)
+            delete edges[i];
+        edges[i] = nullptr;
+    }
 
-
+    if (numNodes > 1)
+        delete [] edges;
+    else if (numNodes == 1)
+        delete edges;
+    edges = nullptr;
 }

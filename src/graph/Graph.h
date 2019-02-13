@@ -6,11 +6,16 @@
 #define DFS_GRAPH_GRAPH_H_
 
 #include "../contract/IGraph.h"
+#include <vector>
+
+using namespace std;
+
+typedef vector<vector<Edge_t>> Matrix;
 
 class Graph : public IGraph
 {
 private:
-  GraphSize_t numNodes;
+  int numNodes;
   Edge_t **edges;
 
 public:
@@ -19,21 +24,23 @@ public:
     , edges(nullptr)
     {};
 
-  Graph(GraphSize_t numNodes);
+  Graph(int numNodes);
+
+  Graph(Matrix &matrix);
+
+  //Graph(int numNodes, void *matrix);
 
   ~Graph();
 
-  virtual GraphSize_t getNumNodes() override;
+  virtual int getNumNodes() const override;
 
-  virtual GraphSize_t getNumNeighbors(VertexIndex_t u) override;
+  virtual int getNumNeighbors(VertexIndex_t u) const override;
 
-  virtual VertexIndex_t *getNeighbors(VertexIndex_t u) override;
+  virtual VertexIndex_t *getNeighbors(VertexIndex_t u) const override;
 
-  virtual bool hasEdge(VertexIndex_t u, VertexIndex_t v) override;
+  virtual bool hasEdge(VertexIndex_t u, VertexIndex_t v) const override;
 
-  virtual bool areNeighbors(VertexIndex_t u, VertexIndex_t v) override;
-
-  //virtual void setNumNodes(GraphSize_t numNodes);
+  virtual bool areNeighbors(VertexIndex_t u, VertexIndex_t v) const override;
 
   virtual bool setEdge(VertexIndex_t u, VertexIndex_t v, float weight = 0);
 

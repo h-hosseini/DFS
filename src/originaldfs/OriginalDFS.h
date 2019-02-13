@@ -17,18 +17,19 @@
      black
    };
 
-   struct nodeStruct{
+   struct NodeStruct{
      VertexIndex_t nodeIndex;
      enum colors color;
-     struct nodeStruct *parent;
+     //VertexIndex_t parent;
+     struct NodeStruct *parent;
      unsigned int discoveryTime;
      unsigned int finishingTime;
    };
-   typedef struct nodeStruct node_t;
-   node_t *node; //A pointer to refer to the graph nodes
+   typedef struct NodeStruct Node_t;
+   Node_t *node; //A pointer to refer to the graph nodes
 
    unsigned int time;
-   GraphSize_t numNodes;  //Number of nodes in the graph
+   int numNodes;  //Number of nodes in the graph
 
  public:
    OriginalDFS()
@@ -37,18 +38,19 @@
     , node(nullptr)
    {};
 
-   OriginalDFS(Graph g, unsigned int numNodes);
+   OriginalDFS(const Graph &g);
 
-   void dfsVisit(Graph g, unsigned int u);
+private:
 
+   void dfsVisit(const Graph &g, int u);
 
+public:
 
+    VertexIndex_t getParent(VertexIndex_t u) const;
 
+    unsigned int getDiscoveryTime(VertexIndex_t u) const;
 
-
-
-
-
+    unsigned int getFinishingTime(VertexIndex_t u) const;
 
  };
 #endif // ifndef DFS_ORIGINALDFS_ORIGINALDFS_H_

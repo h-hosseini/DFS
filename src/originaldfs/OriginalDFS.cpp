@@ -4,36 +4,68 @@
 
 #include "OriginalDFS.h"
 
-OriginalDFS::OriginalDFS(Graph g, unsigned int numNodes)
+OriginalDFS::OriginalDFS(const Graph &g)
 {
 
-  this->numNodes = numNodes;
-  node = new (node_t[numNodes]);
+  numNodes = g.getNumNodes();
+  node = new Node_t[numNodes];
 
-  for(unsigned int u = 0; u < numNodes; u++){
+  for(int u = 0; u < numNodes; u++){
+    node[u].nodeIndex = u;
     node[u].color = white;
+    //node[u].parent = -1;
     node[u].parent = nullptr;
+    node[u].discoveryTime = 0; //The valid discovery time is start from 1 in the DFS algorithm.
+    node[u].finishingTime = 0; //The valid discovery time is start from 1 in the DFS algorithm.
   }
 
   time = 0;
 
-  for(unsigned int u = 0; u < numNodes; u++){
+  for(int u = 0; u < numNodes; u++){
     if (node[u].color == white)
       dfsVisit(g, u);
   }
 }
 
-void OriginalDFS::dfsVisit(Graph g, unsigned int u)
+void OriginalDFS::dfsVisit(const Graph &g, int u)
 {
   node[u].color = gray;
   node[u].discoveryTime = ++time;
 
-  unsigned int *neighbors = g.getNeighbors(u);
-  for (unsigned int i = 0; i < g.getNumNeighbors(u); i++){
-    unsigned int v = neighbors[i];
-    node[v].parent = &node[u];
-    dfsVisit(g,v);
+  VertexIndex_t *neighbors = g.getNeighbors(u);
+  VertexIndex_t v;
+  for (int i = 0; i < g.getNumNeighbors(u); i++){
+    v = neighbors[i];
+    if (node[v].color == white){
+        //node[v].parent = u;
+        node[v].parent = node + u;
+        dfsVisit(g,v);
+    }
   }
   node[u].color = black;
   node[u].finishingTime = ++time;
+
+  if (g.getNumNeighbors(u) > 1)
+    delete [] neighbors;
+  else if (g.getNumNeighbors(u) == 1)
+    delete neighbors;
+  neighbors = nullptr;
+}
+
+VertexIndex_t OriginalDFS::getParent(VertexIndex_t u) const{
+
+    //return node[u].parent;
+
+    if (node[u].parent)
+        return node[u].parent->nodeIndex;
+    else
+        return -1; //u has not any parent
+}
+
+unsigned int OriginalDFS::getDiscoveryTime(VertexIndex_t u) const{
+        return node[u].discoveryTime;
+}
+
+unsigned int OriginalDFS::getFinishingTime(VertexIndex_t u) const{
+        return node[u].finishingTime;
 }
